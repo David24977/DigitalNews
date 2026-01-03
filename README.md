@@ -34,6 +34,28 @@ Además:
 
 ---
 
+## Respuesta paginada con DTO propio
+
+### Para las respuestas paginadas, la API no expone directamente objetos Page de Spring.
+
+Spring no garantiza la estabilidad del JSON generado al serializar instancias de PageImpl, por lo que se utiliza un DTO de paginación propio (PageResponseDTO) que envuelve la información relevante de la página:
+
+- Contenido
+
+- Número de página
+
+- Tamaño
+
+- Total de elementos
+
+- Total de páginas
+
+- Indicador de última página
+
+### Este enfoque asegura un contrato de respuesta estable entre backend y frontend, desacopla la API de la implementación interna de Spring y facilita el consumo desde aplicaciones cliente.
+
+---
+
 ## Seguridad
 
 La API utiliza **Spring Security con autenticación por token fijo (Bearer Token)**.
@@ -100,6 +122,19 @@ La gestión del backend se realiza mediante:
 - Requests REST estándar
 
 Esto simplifica el proyecto y evita dependencias innecesarias.
+
+---
+## Configuración CORS
+
+### La API incluye una configuración CORS global integrada con Spring Security para permitir el acceso desde el frontend desarrollado con Vite + React.
+
+Actualmente se permite el origen:
+
+http://localhost:5173
+
+Esta configuración se realiza a nivel de seguridad, evitando el uso de @CrossOrigin en los controladores y manteniendo una configuración centralizada, segura y coherente con una arquitectura stateless.
+
+Los endpoints públicos (GET /noticias/**) pueden ser consumidos libremente desde el frontend, mientras que el resto de endpoints permanecen protegidos mediante autenticación por token.
 
 ---
 
