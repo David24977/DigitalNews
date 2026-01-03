@@ -4,6 +4,7 @@ package com.culleradigital.newApi.controller;
 import com.culleradigital.newApi.dto.NoticiaRequestDto;
 import com.culleradigital.newApi.dto.NoticiaResponseDto;
 import com.culleradigital.newApi.dto.NoticiaUpdateRequest;
+import com.culleradigital.newApi.dto.PageResponseDto;
 import com.culleradigital.newApi.model.Categoria;
 import com.culleradigital.newApi.service.NoticiaService;
 import jakarta.validation.Valid;
@@ -24,13 +25,32 @@ public class NoticiaController {
     private final NoticiaService noticiaService;
 
     public NoticiaController(NoticiaService noticiaService) {
+
         this.noticiaService = noticiaService;
     }
 
+    /**
+     * Se utiliza un DTO de paginación propio en lugar de devolver directamente
+     * Page<T> para evitar exponer PageImpl en la API.
+     *
+     * Spring no garantiza la estabilidad del JSON generado al serializar PageImpl,
+     * por lo que envolver la respuesta en un DTO asegura un contrato estable
+     * entre backend y frontend, evitando cambios inesperados en el formato.
+     */
+
     @GetMapping
-    public Page<NoticiaResponseDto> listarNoticias(
+    public PageResponseDto<NoticiaResponseDto> listarNoticias(
             @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC)Pageable pageable){
-        return noticiaService.listarNoticias(pageable);
+        Page<NoticiaResponseDto> page = noticiaService.listarNoticias(pageable);
+
+        return new PageResponseDto<>(
+                page.getContent(),
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages(),
+                page.isLast()
+        );
     }
 
     @PostMapping
