@@ -7,7 +7,7 @@ Desarrollado con **Spring Boot** y **MySQL**, pensado para servir contenido púb
 
 ## Tecnologías usadas
 
-- **Java 17+**
+- **Java 21**
 - **Spring Boot**
 - **Spring Data JPA**
 - **Spring Security**
@@ -44,7 +44,7 @@ La API utiliza **Spring Security con autenticación por token fijo (Bearer Token
 - API **stateless** (sin sesiones)
 
 ### Ejemplo de header de autenticación:
-Authorization: Bearer CULLERA_DIGITAL_SECRET
+Authorization: Bearer YOUR_SECRET_TOKEN
 
 > El token se configura mediante `application.properties`.
 
@@ -92,7 +92,7 @@ Las imágenes **NO se almacenan en la base de datos** ni en el backend.
 
 ## Gestión de la API
 
-No se utiliza Swagger / OpenAPI.
+No se utiliza Swagger / OpenAPI, da problemas con Spring Security.
 
 La gestión del backend se realiza mediante:
 - **Postman**
