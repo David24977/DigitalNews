@@ -18,21 +18,28 @@ public class Noticia {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 300)
     private String titular;
+
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String resumen;
+
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
     private String contenido;
+
     @Column(nullable = false)
     private LocalDate fecha;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50, columnDefinition = "VARCHAR(50)")
     private Categoria categoria;
+
+    @Column(columnDefinition = "TEXT")
     private String imagenUrl;
 
     @PrePersist

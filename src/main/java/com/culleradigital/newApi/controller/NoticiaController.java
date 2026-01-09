@@ -65,7 +65,13 @@ public class NoticiaController {
 
     @DeleteMapping("/{id}")
     public NoticiaResponseDto eliminarNoticia(@PathVariable UUID id){
+
         return noticiaService.eliminarNoticia(id);
+    }
+
+    @GetMapping("/{id}")
+    public NoticiaResponseDto buscarNoticiaPorId(@PathVariable UUID id){
+        return noticiaService.buscarPorId(id);
     }
 
     @GetMapping(value = "/fecha", params = "fecha")

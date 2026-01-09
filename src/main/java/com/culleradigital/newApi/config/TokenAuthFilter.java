@@ -22,14 +22,9 @@ public class TokenAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-
-        String path = request.getServletPath();
-
-        //  GET públicos
         return "GET".equals(request.getMethod())
-                && path.startsWith("/noticias");
+                && request.getRequestURI().startsWith("/noticias");
     }
-
 
     @Override
     protected void doFilterInternal(
@@ -40,24 +35,27 @@ public class TokenAuthFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
 
-        // LÓGICA CLAVE: Si no hay token, simplemente seguimos.
-        // Spring Security decidirá después si la ruta permite acceso anónimo o no.
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
         String token = authHeader.substring(7);
 
-        if (expectedToken.equals(token)) {
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken("admin", null, List.of());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            filterChain.doFilter(request, response);
-        } else {
-            // Solo si envían un token y es INCORRECTO, damos error
+        if (!expectedToken.equals(token)) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Token invalido");
+            return;
         }
+
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken("admin", null, List.of());
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        filterChain.doFilter(request, response);
     }
 }
+
+
+
+
+

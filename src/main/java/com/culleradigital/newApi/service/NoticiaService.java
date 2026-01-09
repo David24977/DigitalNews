@@ -22,6 +22,8 @@ public interface NoticiaService {
 
     NoticiaResponseDto eliminarNoticia(UUID id);
 
+    NoticiaResponseDto buscarPorId(UUID id);
+
     List<NoticiaResponseDto> buscarPorFecha(LocalDate fecha);
 
     List<NoticiaResponseDto> buscarEntreFechas(LocalDate inicio, LocalDate fin);

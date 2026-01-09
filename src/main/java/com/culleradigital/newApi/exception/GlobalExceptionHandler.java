@@ -2,7 +2,6 @@ package com.culleradigital.newApi.exception;
 
 
 import com.culleradigital.newApi.dto.ErrorDto;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

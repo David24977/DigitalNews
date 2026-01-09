@@ -77,6 +77,13 @@ public class NoticiaServiceImpl implements NoticiaService {
     }
 
     @Override
+    public NoticiaResponseDto buscarPorId(UUID id) {
+        Noticia noticia = noticiaRepository.findById(id)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Noticia no encontrada"));
+        return NoticiaMapper.toResponseDto(noticia);
+    }
+
+    @Override
     public List<NoticiaResponseDto> buscarPorFecha(LocalDate fecha) {
         return noticiaRepository.findByFechaOrderByCreatedAtDesc(fecha)
                 .stream()
