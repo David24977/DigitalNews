@@ -83,6 +83,7 @@ Campos principales:
 - `fecha`
 - `createdAt` (uso interno para ordenación)
 - `imagenUrl` (URL externa)
+- `destacada`
 
 Los campos `resumen` y `contenido` usan `@Lob` para permitir textos largos.
 
