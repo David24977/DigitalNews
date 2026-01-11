@@ -13,6 +13,7 @@ public record NoticiaRequestDto(
         String contenido,
         @NotNull
         Categoria categoria,
-        String imagenUrl
+        String imagenUrl,
+        Boolean destacada
 ) {
 }

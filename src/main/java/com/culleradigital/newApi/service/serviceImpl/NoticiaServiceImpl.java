@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.List;
@@ -32,7 +33,13 @@ public class NoticiaServiceImpl implements NoticiaService {
     }
 
     @Override
+    @Transactional
     public NoticiaResponseDto crearNoticia(NoticiaRequestDto noticiaRequestDto) {
+        //Si viene marcada como destacada, desmarcamos las demás
+        if (Boolean.TRUE.equals(noticiaRequestDto.destacada())) {
+            noticiaRepository.desmarcarTodasLasDestacadas();
+        }
+
         Noticia noticia = NoticiaMapper.toEntity(noticiaRequestDto);
 
         Noticia guardada = noticiaRepository.save(noticia);
@@ -41,9 +48,11 @@ public class NoticiaServiceImpl implements NoticiaService {
     }
 
     @Override
+    @Transactional
     public NoticiaResponseDto modificarParcialNoticia(UUID id, NoticiaUpdateRequest noticiaUpdateRequest) {
        Noticia noticia = noticiaRepository.findById(id)
                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Noticia no encontrada"));
+
        if(noticiaUpdateRequest.titular() != null){
            noticia.setTitular(noticiaUpdateRequest.titular());
        }
@@ -61,7 +70,18 @@ public class NoticiaServiceImpl implements NoticiaService {
        if(noticiaUpdateRequest.imagenUrl() != null){
            noticia.setImagenUrl(noticiaUpdateRequest.imagenUrl());
        }
-       Noticia update = noticiaRepository.save(noticia);
+        // DESTACADA (regla de negocio)
+        if (noticiaUpdateRequest.destacada() != null) {
+
+            if (noticiaUpdateRequest.destacada()) {
+                //Solo una destacada
+                noticiaRepository.desmarcarTodasLasDestacadas();
+            }
+
+            noticia.setDestacada(noticiaUpdateRequest.destacada());
+        }
+
+        Noticia update = noticiaRepository.save(noticia);
 
        return NoticiaMapper.toResponseDto(update);
     }
@@ -110,6 +130,14 @@ public class NoticiaServiceImpl implements NoticiaService {
     @Override
     public List<NoticiaResponseDto> buscarPorTitular(String texto) {
         return noticiaRepository.findByTitularContainingIgnoreCase(texto)
+                .stream()
+                .map(NoticiaMapper::toResponseDto)
+                .toList();
+    }
+
+    @Override
+    public List<NoticiaResponseDto> buscarPorDestacada() {
+        return noticiaRepository.findByDestacadaTrueOrderByCreatedAtDesc()
                 .stream()
                 .map(NoticiaMapper::toResponseDto)
                 .toList();

@@ -94,5 +94,9 @@ public class NoticiaController {
         return noticiaService.buscarPorTitular(texto);
     }
 
+    @GetMapping("/destacadas")
+    public List<NoticiaResponseDto> ListarDestacadas(){
+        return noticiaService.buscarPorDestacada();
+    }
 
 }

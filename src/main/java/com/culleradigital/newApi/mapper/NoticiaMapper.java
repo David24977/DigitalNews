@@ -4,7 +4,7 @@ import com.culleradigital.newApi.dto.NoticiaRequestDto;
 import com.culleradigital.newApi.dto.NoticiaResponseDto;
 import com.culleradigital.newApi.model.Noticia;
 
-import java.util.UUID;
+
 
 public class NoticiaMapper {
 
@@ -21,6 +21,7 @@ public class NoticiaMapper {
         noticia.setContenido(noticiaRequestDto.contenido());
         noticia.setCategoria(noticiaRequestDto.categoria());
         noticia.setImagenUrl(noticiaRequestDto.imagenUrl());
+        noticia.setDestacada(noticiaRequestDto.destacada());
         return noticia;
 
     }
@@ -35,7 +36,8 @@ public class NoticiaMapper {
                 noticia.getContenido(),
                 noticia.getFecha(),
                 noticia.getCategoria(),
-                noticia.getImagenUrl()
+                noticia.getImagenUrl(),
+                noticia.getDestacada()
         );
     }
 }

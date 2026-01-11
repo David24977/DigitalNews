@@ -32,5 +32,7 @@ public interface NoticiaService {
 
     List<NoticiaResponseDto> buscarPorTitular(String texto);
 
+    List<NoticiaResponseDto> buscarPorDestacada();
+
 
 }

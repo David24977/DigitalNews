@@ -42,6 +42,9 @@ public class Noticia {
     @Column(columnDefinition = "TEXT")
     private String imagenUrl;
 
+    @Column(nullable = false)
+    private Boolean destacada = false;
+
     @PrePersist
     private void prePersist(){
 

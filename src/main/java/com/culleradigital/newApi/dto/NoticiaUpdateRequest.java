@@ -7,6 +7,7 @@ public record NoticiaUpdateRequest(
         String resumen,
         String contenido,
         Categoria categoria,
-        String imagenUrl
+        String imagenUrl,
+        Boolean destacada
 ) {
 }

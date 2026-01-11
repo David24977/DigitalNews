@@ -12,6 +12,7 @@ public record NoticiaResponseDto(
         String contenido,
         LocalDate fecha,
         Categoria categoria,
-        String imagenUrl
+        String imagenUrl,
+        Boolean destacada
 ) {
 }
