@@ -154,7 +154,13 @@ app.security.token=contraseña elegida
 - Backend terminado
 - Seguridad configurada
 - Listo para integración con frontend
-- Frontend en desarrollo(React)
+
+## Frontend
+
+La interfaz de usuario de esta aplicación se encuentra en el siguiente repositorio:
+
+https://github.com/David24977/cullera-digital-frontend
+
 
 ## Autor
 
