@@ -22,9 +22,23 @@ public class TokenAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return "GET".equals(request.getMethod())
-                && request.getRequestURI().startsWith("/noticias");
+
+        String path = request.getRequestURI();
+        String method = request.getMethod();
+
+        // Noticias públicas
+        if ("GET".equals(method) && path.startsWith("/noticias")) {
+            return true;
+        }
+
+        // Login admin (público)
+        if ("POST".equals(method) && path.equals("/admin/login")) {
+            return true;
+        }
+
+        return false;
     }
+
 
     @Override
     protected void doFilterInternal(
@@ -37,6 +51,8 @@ public class TokenAuthFilter extends OncePerRequestFilter {
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\":\"Unauthorized\"}");
             return;
         }
 
@@ -44,6 +60,8 @@ public class TokenAuthFilter extends OncePerRequestFilter {
 
         if (!expectedToken.equals(token)) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\":\"Unauthorized\"}");
             return;
         }
 
