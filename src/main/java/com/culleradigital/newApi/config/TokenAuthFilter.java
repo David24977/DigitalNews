@@ -26,6 +26,11 @@ public class TokenAuthFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         String method = request.getMethod();
 
+        // PREFLIGHT CORS
+        if ("OPTIONS".equals(method)) {
+            return true;
+        }
+
         // Noticias públicas
         if ("GET".equals(method) && path.startsWith("/noticias")) {
             return true;
@@ -38,6 +43,7 @@ public class TokenAuthFilter extends OncePerRequestFilter {
 
         return false;
     }
+
 
 
     @Override
