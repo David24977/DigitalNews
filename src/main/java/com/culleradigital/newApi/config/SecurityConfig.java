@@ -30,8 +30,12 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
+                        // PRE-FLIGHT CORS
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // PUBLIC
                         .requestMatchers(HttpMethod.POST, "/admin/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/noticias/**").permitAll()
+                        //Resto protegido
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(tokenAuthFilter, UsernamePasswordAuthenticationFilter.class);
