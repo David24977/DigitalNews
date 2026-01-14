@@ -16,8 +16,11 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowedOrigins(List.of(
+                //DEV
                 "http://localhost:5173",
-                "http://192.168.0.22:5173"
+                "http://192.168.0.22:5173",
+                //PROD
+                "https://cullera-digital.vercel.app"
         ));
 
         config.setAllowedMethods(List.of(

@@ -27,24 +27,22 @@ public class TokenAuthFilter extends OncePerRequestFilter {
         String method = request.getMethod();
 
         // PREFLIGHT CORS
-        if ("OPTIONS".equals(method)) {
+        if ("OPTIONS".equalsIgnoreCase(method)) {
             return true;
         }
 
         // Noticias públicas
-        if ("GET".equals(method) && path.startsWith("/noticias")) {
+        if ("GET".equalsIgnoreCase(method) && path.startsWith("/noticias")) {
             return true;
         }
 
         // Login admin (público)
-        if ("POST".equals(method) && path.equals("/admin/login")) {
+        if ("POST".equalsIgnoreCase(method) && path.equals("/admin/login")) {
             return true;
         }
 
         return false;
     }
-
-
 
     @Override
     protected void doFilterInternal(
@@ -56,19 +54,14 @@ public class TokenAuthFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.getWriter().write("{\"error\":\"Unauthorized\"}");
-            return;
+            // ❌ NO escribimos la respuesta
+            throw new ServletException("Unauthorized");
         }
 
         String token = authHeader.substring(7);
 
         if (!expectedToken.equals(token)) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.getWriter().write("{\"error\":\"Unauthorized\"}");
-            return;
+            throw new ServletException("Unauthorized");
         }
 
         UsernamePasswordAuthenticationToken authentication =
@@ -78,8 +71,3 @@ public class TokenAuthFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
-
-
-
-
-

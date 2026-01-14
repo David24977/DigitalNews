@@ -10,36 +10,43 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     private final TokenAuthFilter tokenAuthFilter;
+    private final CorsConfigurationSource corsConfigurationSource;
 
-    public SecurityConfig(TokenAuthFilter tokenAuthFilter) {
+    public SecurityConfig(TokenAuthFilter tokenAuthFilter,
+                          CorsConfigurationSource corsConfigurationSource) {
         this.tokenAuthFilter = tokenAuthFilter;
+        this.corsConfigurationSource = corsConfigurationSource;
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+            throws Exception {
+
         http
-                .cors(Customizer.withDefaults())
+                //ESTA LÍNEA ES LA CLAVE
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
+
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        // PRE-FLIGHT CORS
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        // PUBLIC
                         .requestMatchers(HttpMethod.POST, "/admin/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/noticias/**").permitAll()
-                        //Resto protegido
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(tokenAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(tokenAuthFilter,
+                        UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 }
+
